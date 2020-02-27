@@ -1,10 +1,13 @@
-const getRequestBody = async req => {
+const getRequestBody = req => new Promise((res, rej) => {
+
   let buffer = '';
-  await req.setEncoding('utf8')
+
+  req.setEncoding('utf8')
     .on('data', chunk => buffer += chunk)
-    .on('error', err => Promise.reject(err))
-  return Promise.resolve(buffer);
-};
+    .on('error', err => rej(err))
+    .on('end', () => res(buffer))
+})
+
 
 module.exports = {
   getRequestBody,
