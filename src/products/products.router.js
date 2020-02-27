@@ -1,7 +1,7 @@
-const { getAllProducts } = require('./products.controller');
+const { getProducts } = require('./products.controller');
 
 const productsRouter = new Map();
 
-productsRouter.set('GET', getAllProducts);
+productsRouter.set('GET', getProducts);
 
 module.exports = productsRouter;

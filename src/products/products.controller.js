@@ -1,12 +1,25 @@
 const fsPromises = require('fs').promises;
+const { urlParser } = require('./products.hellpers');
 const { productsDb } = require('../../config');
 
 class ProductsController {
 
   constructor() {
   }
-  get getAllProducts() {
-    return this._getAllProducts.bind(this);
+  get getProducts() {
+    return this._getHandller.bind(this);
+  }
+
+  _getHandller(req, res) {
+    let fn;
+    urlParser(req);
+    fn = this._getAllProducts(req, res);
+
+    return fn;
+  }
+
+  async _getProductById(req, res) {
+
   }
 
   async _getAllProducts(req, res) {
