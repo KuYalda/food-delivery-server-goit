@@ -1,6 +1,6 @@
 const validator = require('./signup.validator');
-const { getRequestBody } = require('../main.helpers');
-const { writeUser } = require('./signup.hellpers');
+const { getRequestBody } = require('../hellpers/main.hellpers');
+const { writeUser } = require('./signup.model');
 
 class SignUpController {
 
@@ -10,6 +10,7 @@ class SignUpController {
   };
 
   async _signUpUser(req, res) {
+
     try {
       const body = await getRequestBody(req);
       const data = await validator.validateSignUpUser(body);
@@ -22,8 +23,10 @@ class SignUpController {
         }));
 
     } catch (err) {
-      res.writeHead(400).end();
+      const { statusCode, message } = err;
+      res.writeHead(statusCode || 500).end(message || 'Internal Server Error');
       console.error(err);
+      return;
     }
   }
 }
