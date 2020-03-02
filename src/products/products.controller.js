@@ -1,5 +1,6 @@
-const fsPromises = require('fs').promises;
+const { readFile, stat } = require('fs').promises;
 const { productsDb } = require('../../config');
+const { getResponseBody } = require('../hellpers/main.hellpers');
 
 class ProductsController {
 
@@ -11,31 +12,41 @@ class ProductsController {
   }
 
   _setHandllerGetMethod(req, res) {
-    const { incomingRoute: { getAll, id, search } } = URL;
+    const { getAll } = URL.incomingRoute;
     if (getAll) return this._getAllProducts(res);
-    if (id && !search) return this._getProductById(res);
-    return new Error();
+    return this._getProducts(res);
   }
 
-  async _getProductById(res) {
+  async _getProducts(res) {
     try {
-      const { incomingRoute: { id } } = URL;
-      const products = await fsPromises.readFile(productsDb, 'utf-8');
-      const product = JSON.parse(products).find(el => el.id === +id);
+      const productsJson = await readFile(productsDb, 'utf-8');
+      const products = JSON.parse(productsJson);
+      const body = await getResponseBody(products);
 
+      const status = body.length ? 'success' : 'no products';
+      const jsonBody = JSON.stringify({
+        status: status,
+        products: body
+      })
+
+      res.writeHead(200, {
+        "Content-Type": "application/json",
+        "Content-Length": new TextEncoder().encode(jsonBody).length,
+      });
+      res.write(jsonBody);
+      res.end();
     } catch (err) {
       const { statusCode, message } = err;
       res.writeHead(statusCode || 500).end(message || 'Internal Server Error');
       console.error(err);
 
     }
-
   }
 
   async _getAllProducts(res) {
     try {
-      const file = await fsPromises.stat(productsDb);
-      const products = await fsPromises.readFile(productsDb, 'utf-8');
+      const file = await stat(productsDb);
+      const products = await readFile(productsDb, 'utf-8');
 
       res.writeHead(200, {
         "Content-Type": "application/json",

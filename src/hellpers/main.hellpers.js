@@ -1,5 +1,3 @@
-const { e404 } = require('./error.hellpers');
-
 const getRequestBody = req => new Promise((res, rej) => {
 
   let buffer = '';
@@ -10,9 +8,20 @@ const getRequestBody = req => new Promise((res, rej) => {
     .on('end', () => res(buffer))
 });
 
-// const getAnysingById = (where, id) => new Promise((res, rej) => {
+const getResponseBody = data => new Promise(res => {
 
-// });
+  const { searchParams } = URL.incomingRoute;
+  const body = [];
+
+  searchParams.forEach((val, key) => {
+    data.forEach(el => {
+      const arr = Array.isArray(el[key]) ? el[key] : [el[key]];
+      if (arr.includes(val)) body.push(el);
+    })
+  })
+
+  return res(body);
+});
 
 const parseRoute = req => new Promise(res => {
 
@@ -39,6 +48,7 @@ const parseRoute = req => new Promise(res => {
       }
 
       this.pathname = name;
+      console.log('this :', this);
     }
   }
 
@@ -54,5 +64,6 @@ const parseRoute = req => new Promise(res => {
 
 module.exports = {
   getRequestBody,
+  getResponseBody,
   parseRoute,
 }
