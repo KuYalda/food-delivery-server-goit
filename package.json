@@ -1,0 +1,17 @@
+{
+  "name": "nodejs_homework_1",
+  "version": "0.1.0",
+  "description": "homework",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon || node main.js",
+    "debug": "nodemon --inspect main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ozheredov Ihor",
+  "license": "ISC",
+  "dependencies": {
+    "node-validator": "^0.1.27",
+    "nodemon": "^2.0.2"
+  }
+}
