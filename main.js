@@ -2,63 +2,24 @@ const http = require('http');
 const router = require('./src/router');
 const { port } = require('./config');
 const { e404, e405 } = require('./src/hellpers/error.hellpers');
+const { parseRoute } = require('./src/hellpers/main.hellpers');
 
-const parseRoute = req => {
-  global.incomingRoute = new URL(`http://${req.headers.host}${req.url}`);
-  Object.defineProperty(global.incomingRoute, 'getAll', { enumerable: true, writable: true, value: false })
-
-  const { incomingRoute } = global;
-
-  console.log('incomingRoute :', incomingRoute);
-  console.log('global.incomingRoute.getAll :', global.incomingRoute.getAll);
-  const { pathname, search } = incomingRoute;
-  const pathArr = pathname.replace(/\/$/, '').slice(1).split('/');
-  global.incomingRoute.pathname = `/${pathArr[0]}/${pathArr[1]}`;
-  console.log('pathArr :', pathArr);
-
-  if (pathArr.length === 2 && !search) {
-    global.incomingRoute.getAll = true;
-  } else if (pathArr.length === 2) {
-    global.incomingRoute.getAll = false;
-  } else {
-
-  }
-
-  console.log(global.incomingRoute.getAll);
-  console.log(global.incomingRoute.pathname);
-
-  if (pathnameLength === 2 && incomingRoute.searchParams) console.log('Evrica');
-
-  let route;
-
-  if (!str.includes('products')) {
-    route = str;
-    console.log('products route :', route);
-    return route;
-  }
-
-  const arr = str.slice(1).split('/');
-  console.log('arr :', arr);
-  route = arr.length === 2 ? str : `/${arr[0]}/${arr[1]}`;
-  console.log('route :', route);
-  return route;
-}
 
 const startServer = port => {
 
-  const server = http.createServer((req, res) => {
-
-    const url = parseRoute(req);
+  const server = http.createServer(async (req, res) => {
 
     try {
+      await parseRoute(req);
+      const { incomingRoute: { pathname, method } } = URL;
 
-      if (!router.has(req.url)) throw e404(`URL ${req.url} not found`);
+      if (!router.has(pathname)) throw e404(`URL ${req.url} not found`);
 
-      const route = router.get(req.url);
+      const route = router.get(pathname);
 
-      if (!route.has(req.method)) throw e405(`On URL ${req.url} method ${req.method} not allowed`);
+      if (!route.has(method)) throw e405(`On URL ${req.url} method ${req.method} not allowed`);
 
-      const handler = route.get(req.method);
+      const handler = route.get(method);
 
       handler(req, res);
 
@@ -68,11 +29,10 @@ const startServer = port => {
       console.error({ err });
       return;
     }
-
   });
 
   server.listen(port);
 
-}
+};
 
 startServer(port);

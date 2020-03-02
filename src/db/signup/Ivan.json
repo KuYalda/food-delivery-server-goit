@@ -1,1 +1,7 @@
-{"_id":1582725950336,"username":"Ivan","telephone":"0637777777","password":"12345","email":"ivan@gmail.com"}
+{
+  "_id": "1582725950336",
+  "username": "Ivan",
+  "telephone": "0637777777",
+  "password": "12345",
+  "email": "ivan@gmail.com"
+}
