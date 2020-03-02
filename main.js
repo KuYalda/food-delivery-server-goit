@@ -1,6 +1,7 @@
 const http = require('http');
 const router = require('./src/router');
 const { port } = require('./config');
+const { e404, e405 } = require('./src/hellpers/error.hellpers');
 
 const parseRoute = req => {
   global.incomingRoute = new URL(`http://${req.headers.host}${req.url}`);
@@ -50,16 +51,22 @@ const startServer = port => {
     const url = parseRoute(req);
 
     try {
-      !router.has(url) && res.writeHead(404).end('Not found');
-      const route = router.get(url);
 
-      !route.has(req.method) && res.writeHead(405).end('Method not allowed');
+      if (!router.has(req.url)) throw e404(`URL ${req.url} not found`);
+
+      const route = router.get(req.url);
+
+      if (!route.has(req.method)) throw e405(`On URL ${req.url} method ${req.method} not allowed`);
+
       const handler = route.get(req.method);
 
       handler(req, res);
 
     } catch (err) {
+      const { statusCode, message } = err;
+      res.writeHead(statusCode || 520).end(message || 'Unknown message, try later')
       console.error({ err });
+      return;
     }
 
   });

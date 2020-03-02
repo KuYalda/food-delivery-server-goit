@@ -34,6 +34,8 @@ class ProductsController {
       res.write(products);
       res.end();
     } catch (err) {
+      const { statusCode, message } = err;
+      res.writeHead(statusCode || 500).end(message || 'Internal Server Error');
       console.error(err);
     }
 

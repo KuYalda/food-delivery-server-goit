@@ -1,4 +1,5 @@
 const Validator = require('node-validator');
+const { e400 } = require('../hellpers/error.hellpers');
 
 class SignUpValidator {
   static async validateSignUpUser(data) {
@@ -20,7 +21,8 @@ class SignUpValidator {
         if (!errCount) {
           return res(body)
         }
-        return rej(new Error('Invalid request body'));
+
+        return rej(e400('Invalid request body'));
       })
     })
   }
