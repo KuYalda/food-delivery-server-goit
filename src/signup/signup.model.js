@@ -12,7 +12,7 @@ const writeUser = user => new Promise((res, rej) => {
   if (existsSync(fileName)) return rej(e409(`${user.username} allready exist`));
 
   const userWithId = {
-    _id: Date.now(),
+    _id: Date.now().toString(),
     ...user
   }
 

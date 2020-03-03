@@ -13,8 +13,12 @@ Todo:
       ✔ check if user exists @done(20-03-02 09:54)
       ✔ use path.join and error 409 @done(20-03-02 09:56)
       ✔ signup.hellpers => signup.model @done(20-03-02 09:57)
-      
+    ✔ universal route, that answers any valid requests; @done(20-03-02 22:48)
+      ✔ use global object URL and URLSearchParam; @done(20-03-02 22:48)
+      ✔ modify incoming url; @done(20-03-02 22:48)
+      ✔ set response according to the task; @done(20-03-02 22:48)
   ☐ Bonuses:
     ✔ add id to userDate before sent response; @done(20-02-26 15:28)
     ✔ custom errors; @done(20-03-02 09:52)
     ☐ custom logger;
+    ☐ documentation
